@@ -7,13 +7,13 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="zookpe-demo" />
-        <module name="shiro-demo" />
         <module name="springboot-demo" />
+        <module name="demo-api-1" />
         <module name="demo-highcharts" />
         <module name="springboot-solr" />
         <module name="ssh1905" />
         <module name="zookpe-consumer" />
-        <module name="demo-api-1" />
+        <module name="shiro-demo" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
