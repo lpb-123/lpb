@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jk.mapper.DaMapper" >
+
+    <select id="querycar" resultType="java.util.LinkedHashMap">
+    select COUNT(*) y,DATE_FORMAT(carTime,'%Y-%m') time  from t_car GROUP BY DATE_FORMAT(cartime,'%Y-%m')
+  </select>
+
+    <select id="queryCarAll" resultType="java.util.LinkedHashMap">
+select count(*) count,DATE_FORMAT(carTime,'%u') data  from t_car GROUP BY DATE_FORMAT(cartime,'%u')
+  </select>
+
+
+
+    <select id="queryzhu" resultType="java.util.LinkedHashMap">
+select count(*) y,carshu dou,DATE_ FORMAT(carTime,'%e') time  from t_car GROUP BY DATE_FORMAT(cartime,'%e')
+
+/*select count(*) y,carshu,DATE_FORMAT(carTime,'%e') time  from t_car  GROUP BY DATE_FORMAT(cartime,'%e') and
+cartime = '2014-06-%e'*/
+
+ </select>
+
+
+
+</mapper>

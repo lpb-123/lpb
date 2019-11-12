@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<!-- jqeuy默认的css样式 -->
+<link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+
+<link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+
+<!-- 这是jquery的核心包  -->
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<!-- 这是easyui的核心包  -->
+<script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+
+<script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js"></script>
+<body>
+<!--<form id="serch">
+    关键字:<input type="text" id="carName" name="carName">
+    <input type="button" onclick="serch()">
+</form>-->
+<div id="tools">
+
+    <a href="javascript:searchUser()" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true">搜索</a>
+    <a href="javascript:openAdd()" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true">新增</a>
+</div>
+<!-- 定义新增的div -->
+<div id="userDialog" class="easyui-dialog" data-options="closed:true,width:500,height:400,modal:true,buttons:'#buttons'">
+    <form id="userForm" method="post">
+        <input class="easyui-validatebox" type="hidden" id="hiid"  name="carId"/>
+        <table>
+            <!-- <tr>
+                 <td>carId</td>
+                 <td><input class="easyui-textbox" name="carId"></td>
+             </tr>-->
+            <tr>
+                <td>carName</td>
+                <td><input class="easyui-textbox" name="carName"></td>
+            </tr>
+            <tr>
+                <td>carShow</td>
+                <td><input class="easyui-textbox" name="carShow"></td>
+            </tr>
+            <tr>
+                <td>carPrice</td>
+                <td><input class="easyui-textbox" name="carPrice"></td>
+            </tr>
+            <!--<tr>
+                 <td>carTime</td>
+                   <td><input class="easyui-datebox" name="carTime"></td>
+              </tr>-->
+
+        </table>
+    </form>
+</div>
+<div id="buttons">
+    <a href="javascript:saveUser()" class="easyui-linkbutton" data-options="iconCls:'icon-ok',plain:true">确定</a>
+    <a href="javascript:closeDialog()" class="easyui-linkbutton" data-options="iconCls:'icon-cancel',plain:true">取消</a>
+</div>
+
+
+
+<table id="dg"></table>
+</body>
+<script>
+$(function(){
+    initUserTable();
+    $("#upda").dialog("close");
+    $("#dd").dialog("close");
+})
+
+    function initUserTable(){
+        $("#dg").datagrid({
+            url:'../search',
+            columns:[
+                [{field:"checkbox",checkbox:true},
+                    {field:"carId",title:"id"},
+                    {field:"carName",title:"carName"},
+                    {field:"carTime",title:"carTime"},
+                    {field:"carShow",title:"carShow"},
+                    {field:"carPrice",title:"carPrice"},
+
+                    {field:"tool",title:"操作",formatter:function(value,row,index){
+                            var str = "<a href='javascript:openUpdate("+row.carId+")'>修改</a>"+"|"+" <a href='javascript:del("+row.carId+")'>删除</a>";
+
+                            return str;
+                        }}
+                ]
+            ],
+
+            fit:true,
+            toolbar:"#tools"
+        })
+    }
+
+del = function(id){
+
+    $.ajax({
+
+        url:'../del',
+
+        data:{id:id},
+
+        success:function(){
+            initUserTable();
+            $('#table').datagrid('load');
+
+            alert("删除成功")
+
+        }
+
+
+    })
+
+
+}
+
+//打开新增弹框
+function openAdd(){
+
+    $("#userDialog").dialog({
+        closed:false,
+        title:'新增用户'
+    });
+
+}
+//关闭新增弹框
+function closeDialog(){
+    $("#userDialog").dialog("close");
+}
+
+function openUpdate (carId){
+
+//  回显数据
+    $.ajax({
+        url:"../upda",
+        type:"POST",
+        data:{carId:carId},
+        success:function(data){
+            $("#hiid").val(data.carId);
+
+            //打开   dialog
+            $("#upda").dialog("op   en");
+            //读取记录填充到表单中
+            $('#userForm').form('load','../upda?carId='+carId);
+        },
+           error:function(){
+            alert("ajax访问失败了,查看控制台");
+        }
+    });
+
+}
+
+function update(){
+
+    $('#userForm').form('submit', {
+        url: "../update",
+        onSubmit: function(){
+
+        },
+        success: function(){
+
+            //清空from表单
+            $("#userForm").form("reset");
+
+            $("#upda").dialog("close");
+            //刷新 表格
+            $('#dg').datagrid('load');
+
+
+        }
+    });
+
+}
+
+opadd = function(){
+
+    $("#dd").dialog("open");
+}
+
+</script>
+</html>

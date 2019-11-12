@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" src="../jquery.min.js"></script>
+    <script src="../highcharts/code/highcharts.js"></script>
+    <script src="../highcharts/code/modules/exporting.js"></script>
+    <script src="../highcharts/code/modules/export-data.js"></script>
+</head>
+<body>
+<div id="container" style="min-width:400px;height:400px"></div>
+</body>
+<script>
+   $(function(){
+        $.ajax({
+            url:"../queryzhu",
+            type:"post",
+            dataType:"json",
+            async:true,
+            success:function (data) {
+                var xtext = [];//X轴TEXT
+                var nums = [];//y轴数量
+                var d=[];
+                for (var i=0;i<data.length;i++){
+
+                    xtext.push(data[i].dou);
+                    nums.push(data[i].time);
+                    d.push(data[i].cc);
+                }
+
+                var chart = Highcharts.chart('container',{
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: '月平均降雨量'
+                    },
+                    subtitle: {
+                        text: '数据来源: WorldClimate.com'
+                    },
+                    xAxis: {
+                        categories: [
+                            '一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'
+                        ],
+                        crosshair: true
+                    },
+                    yAxis: {
+                        min: 0,
+                        title: {
+                            text: '降雨量 (mm)'
+                        }
+                    },
+                    tooltip: {
+                        // head + 每个 point + footer 拼接成完整的 table
+                        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                            '<td style="padding:0"><b>{point.d:.1f} mm</b></td></tr>',
+                        footerFormat: '</table>',
+                        shared: true,
+                        useHTML: true
+                    },
+                    plotOptions: {
+                        column: {
+                            borderWidth: 0
+                        }
+                    },
+
+                    series: [{
+                        name: nums,
+                        data: xtext
+                    }]
+                });
+
+
+
+            }
+
+        })
+
+
+    })
+
+
+
+
+
+</script>
+</html>

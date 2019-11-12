@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jk.mapper.cMapper" >
+  <resultMap id="BaseResultMap" type="com.jk.model.UserModel" >
+  </resultMap>
+
+  <select id="queryCount" resultType="int">
+	  select count(1) from t_users t
+	</select>
+
+
+  <select id="queryUserPage" resultMap="BaseResultMap">
+
+    select * from t_users
+
+
+    limit #{start},#{rows}
+  </select>
+
+</mapper>

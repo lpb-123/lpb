@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jk.mapper.UserMapper" >
+  <resultMap id="BaseResultMap" type="com.jk.model.UserModel" >
+
+  </resultMap>
+
+  <select id="queryNodes" parameterType="int" resultType="com.jk.model.TreeModel">
+    select t.id,t.text,t.pid,t.url  from menutree t where t.pid=#{pid}
+   </select>
+
+
+  <select id="queryCount" resultType="int">
+	  select count(1) from t_users t
+	</select>
+
+
+  <select id="queryUserPage" resultMap="BaseResultMap" >
+
+    select u.* ,d.dname ,a1.name proName ,a2.name cityName,r.infoname from t_users u
+    left join t_dept d on u.deptid = d.did
+    left join t_area a1 on u.province = a1.aid
+    left join t_area a2 on u.city = a2.aid
+    left join t_user_role ur on u.id = ur.userid
+    left join t_info r on r.infoid = ur.roleid
+    group by u.id
+
+
+    limit #{start},#{rows}
+  </select>
+  <!--新增-->
+  <insert id="addUser" parameterType="com.jk.model.UserModel">
+		insert into t_users(name,password,loginnumber,birth,email,sex,datail,headimg,deptid,province,city)
+		values(#{name},#{password},#{loginnumber},#{birth},#{email},
+		#{sex},#{datail},#{headimg},#{deptid},#{province},#{city})
+	</insert>
+
+  <!-- 角色 -->
+  <select id="queryRole" resultType="com.jk.model.InfoModel">
+        select * from t_info
+ </select>
+  <!--修改-->
+  <update id="updateUser" parameterType="com.jk.model.UserModel">
+		update t_users u set u.name=#{name},u.password=#{password},u.loginnumber=#{loginnumber},u.email=#{email},
+			u.birth=#{birth},u.sex=#{sex},u.datail=#{datail},u.headimg=#{headimg},u.deptid=#{deptid},
+			u.province=#{province},u.city=#{city}
+			where u.id=#{id}
+	</update>
+  <select id="queryUserById" parameterType="int" resultMap="BaseResultMap">
+	 select u.*,group_concat(ur.roleid) roleid from t_users u
+			left join t_user_role ur on u.id = ur.userid
+			 where u.id=#{id}
+			 group by u.id
+	</select>
+  <!-- 省数据 -->
+  <select id="queryshen" parameterType="int" resultType="com.jk.model.AreaModel">
+    select * from t_area a where a.pid=#{pid}
+ </select>
+  <!-- 初始化权限树 -->
+  <select id="queryPowerTreeByRoleid" parameterType="int" resultType="com.jk.model.TreeModel">
+  select n.id,n.text,n.url,n.pid from menutree n left join t_role_power rp on n.id = rp.powerid
+  where rp.roleid=#{roleid}
+	</select>
+    <select id="queryTreeByPid2" parameterType="int" resultType="com.jk.model.TreeModel">
+     select t.id,t.text,t.pid,t.url  from menutree t where t.pid=#{pid}
+   </select>
+    <!-- 新增权限树 -->
+    <insert id="addPower" parameterType="com.jk.model.TreeModel">
+	 insert into menutree(text,url,pid) values(#{text},#{url},#{pid})
+    </insert>
+    <!--删除节点-->
+    <delete id="deletePowerById" parameterType="int">
+    delete from  menutree where id=#{powerid}
+    </delete>
+    <!--修改节点-->
+    <update id="updatePowerById" parameterType="com.jk.model.TreeModel">
+	update menutree m set m.text=#{text} where m.id=#{id}
+	</update>
+<!--c查询-->
+    <select id="queryMenu" resultType="com.jk.model.MenuModel" parameterType="int">
+		select * from t_power_menu where powerid=#{powerid}
+	</select>
+<!--新增权限详细表-->
+    <insert id="saveMenu" parameterType="com.jk.model.MenuModel">
+    insert into t_power_menu(name,url,powerid) values(#{name},#{url},#{powerid})
+    </insert>
+<!--删除-->
+    <delete id="deleteByRoleid" parameterType="int">
+    delete from t_role_power where roleid=#{roleid}
+    </delete>
+<!--新增-->
+    <insert id="addRolePower"  >
+        insert into t_role_power(roleid,powerid) values
+        <foreach collection="ids" item="powerid" separator=",">
+            (#{roleid},#{powerid})
+        </foreach>
+    </insert>
+    <select id="queryUserName" parameterType="Integer" resultMap="BaseResultMap">
+		select * from t_users u where u.loginnumber = #{loginnumber}
+	</select>
+    <!-- 注册用户 -->
+    <insert id="zhuceuser" parameterType="com.jk.model.UserModel">
+		insert into t_users(loginnumber,password) values (#{loginnumber},#{password})
+	</insert>
+
+
+
+</mapper>
