@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.sql.SQLOutput;
 import java.util.*;
 
 @Controller
@@ -40,7 +41,7 @@ public String index(){
     @RequestMapping("search")
     @ResponseBody
     public List<Car> queryCarList(){
-
+        System.out.println("222222");
 
         List<Car> list= carService.queryCarList();
 
