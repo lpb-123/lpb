@@ -30,7 +30,7 @@ public class CarController {
 
         List<Car> list= carService.queryCarList();
 
-
+        System.out.println("1111111");
         return list;
     }
 
